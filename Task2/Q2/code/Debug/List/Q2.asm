@@ -1349,9 +1349,9 @@ _timer1_ovf_isr:
 	MOVW R30,R6
 	ADIW R30,1
 	MOVW R6,R30
-; 0000 003F     if(counter1 ==100){
-	LDI  R30,LOW(100)
-	LDI  R31,HIGH(100)
+; 0000 003F     if(counter1 ==300){
+	LDI  R30,LOW(300)
+	LDI  R31,HIGH(300)
 	CP   R30,R6
 	CPC  R31,R7
 	BRNE _0x6

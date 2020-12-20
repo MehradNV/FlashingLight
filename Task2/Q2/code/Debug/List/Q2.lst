@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm Sun Dec 20 23:20:43 2020
+AVRASM ver. 2.1.30  C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm Sun Dec 20 23:38:00 2020
 
 C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1088): warning: Register r4 already defined by the .DEF directive
 C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1089): warning: Register r5 already defined by the .DEF directive
@@ -1370,9 +1370,9 @@ C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.
 000096 01f3      	MOVW R30,R6
 000097 9631      	ADIW R30,1
 000098 013f      	MOVW R6,R30
-                 ; 0000 003F     if(counter1 ==100){
-000099 e6e4      	LDI  R30,LOW(100)
-00009a e0f0      	LDI  R31,HIGH(100)
+                 ; 0000 003F     if(counter1 ==300){
+000099 e2ec      	LDI  R30,LOW(300)
+00009a e0f1      	LDI  R31,HIGH(300)
 00009b 15e6      	CP   R30,R6
 00009c 05f7      	CPC  R31,R7
 00009d f561      	BRNE _0x6
