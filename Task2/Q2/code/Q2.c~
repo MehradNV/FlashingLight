@@ -46,7 +46,6 @@ interrupt [TIM0_OVF] void timer0_ovf_isr(void)
            PORTC = temp;
            temp = temp ^ 0b11111111;
 
-              Timer0OverFlowCounter=0;
              lastNumber--;
              if(lastNumber == -1 ){
              lastNumber = 3;
@@ -60,8 +59,8 @@ interrupt [TIM0_OVF] void timer0_ovf_isr(void)
 interrupt [TIM1_OVF] void timer1_ovf_isr(void)
 {
 
-    ++Timer1OverFlowCounter;
-    if(Timer1OverFlowCounter ==500){
+    ++counter1;
+    if(counter1 ==50){
 
          SevenSegCounter[3]++;
 
@@ -78,7 +77,7 @@ interrupt [TIM1_OVF] void timer1_ovf_isr(void)
 
 
                    i=3;
-             Timer1OverFlowCounter=0;
+             counter1=0;
 
     }
 

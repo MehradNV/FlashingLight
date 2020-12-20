@@ -1,14 +1,14 @@
 
-AVRASM ver. 2.1.30  C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm Sun Dec 20 21:44:15 2020
+AVRASM ver. 2.1.30  C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm Sun Dec 20 23:20:43 2020
 
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1088): warning: Register r4 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1089): warning: Register r5 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1090): warning: Register r6 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1091): warning: Register r7 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1092): warning: Register r8 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1093): warning: Register r9 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1094): warning: Register r10 already defined by the .DEF directive
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1095): warning: Register r11 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1088): warning: Register r4 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1089): warning: Register r5 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1090): warning: Register r6 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1091): warning: Register r7 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1092): warning: Register r8 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1093): warning: Register r9 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1094): warning: Register r10 already defined by the .DEF directive
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1095): warning: Register r11 already defined by the .DEF directive
                  
                  
                  ;CodeVisionAVR C Compiler V3.12 Advanced
@@ -1151,7 +1151,7 @@ C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1095): warning: Register r11 alre
 000033 007d
 000034 0007      	.DB  0x66,0x0,0x6D,0x0,0x7D,0x0,0x7,0x0
 000035 007f
-C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1134): warning: .cseg .db misalignment - padding zero byte
+C:\Users\Mehrad\Documents\GitHub\MicroProcessor_Lab\Task2\Q2\code\Debug\List\Q2.asm(1134): warning: .cseg .db misalignment - padding zero byte
 000036 006f      	.DB  0x7F,0x0,0x6F
                  
                  __GLOBAL_INI_TBL:
@@ -1370,9 +1370,9 @@ C:\Users\Mehrad\Desktop\code\Debug\List\Q2.asm(1134): warning: .cseg .db misalig
 000096 01f3      	MOVW R30,R6
 000097 9631      	ADIW R30,1
 000098 013f      	MOVW R6,R30
-                 ; 0000 003F     if(counter1 ==500){
-000099 efe4      	LDI  R30,LOW(500)
-00009a e0f1      	LDI  R31,HIGH(500)
+                 ; 0000 003F     if(counter1 ==100){
+000099 e6e4      	LDI  R30,LOW(100)
+00009a e0f0      	LDI  R31,HIGH(100)
 00009b 15e6      	CP   R30,R6
 00009c 05f7      	CPC  R31,R7
 00009d f561      	BRNE _0x6

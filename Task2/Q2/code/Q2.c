@@ -60,7 +60,7 @@ interrupt [TIM1_OVF] void timer1_ovf_isr(void)
 {
 
     ++counter1;
-    if(counter1 ==500){
+    if(counter1 ==100){
 
          SevenSegCounter[3]++;
 
