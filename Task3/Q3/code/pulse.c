@@ -5,9 +5,9 @@ Automatic Program Generator
 © Copyright 1998-2014 Pavel Haiduc, HP InfoTech s.r.l.
 http://www.hpinfotech.com
 
-Project : Alphabets
+Project : pulse
 Version : 
-Date    : 12/28/2020
+Date    : 12/29/2020
 Author  : 
 Company : 
 Comments: 
@@ -26,39 +26,50 @@ Data Stack size         : 256
 #include <stdio.h>
 
 // Declare your global variables here
-char Alphabets[] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-int counter;
-int i;
-interrupt [TIM0_OVF] void timer0_ovf_isr(void)
-{
+int counter, turn;
+unsigned int ending_edge, starting_edge, clocks, period_out;
+char message[16];
 
-    ++counter;
+interrupt [TIM1_OVF] void timer1_ovf_isr(void){
+     counter++;
+}
+
+interrupt [TIM1_CAPT] void timer1_capt_isr(void){
     
-    if(counter == 500){
-        
-        lcd_putchar(Alphabets[i]);
-        
-        if(i == 25){
-        TCCR0=0x00;
-        TIMSK=0x00;
-        }      
-        
-        counter = 0;
-        i++;
+    if(turn == 0)
+        turn = 1;
+    
+    if(turn == 1){
+        starting_edge = 256 * ICR1H + ICR1L; 
+        turn = 2; 
     }
+    
+    if(turn == 2){
+        ending_edge = 256 * ICR1H + ICR1L + counter * 65536;
+        clocks = ending_edge - starting_edge;
+    
+    period_out = 8000000/clocks;
+    
+    sprintf(message,"%d Hz", period_out); 
+    lcd_puts(message); 
+    
+    
+    turn = 3;
+    }   
+    
+    
+    
 }
 
 
 void main(void)
 {
 // Declare your local variables here
-
+turn = 0;
 counter = 0;
-i = 0;
-TCCR0=0x01;
-TCNT0=0x00;
-OCR0=0x00;
-TIMSK=0x01;
+TCCR1A = 0;
+TCCR1B = 0xC2;
+TIMSK = 0x24;
 lcd_init(20);
 lcd_gotoxy(0,0);
 #asm("sei")
@@ -71,3 +82,4 @@ while (1)
 
       }
 }
+

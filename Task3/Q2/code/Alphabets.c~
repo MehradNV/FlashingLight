@@ -27,7 +27,6 @@ Data Stack size         : 256
 
 // Declare your global variables here
 char Alphabets[] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-char ShowAlphabets;
 int counter;
 int i;
 interrupt [TIM0_OVF] void timer0_ovf_isr(void)
@@ -47,7 +46,7 @@ interrupt [TIM0_OVF] void timer0_ovf_isr(void)
         counter = 0;
         i++;
     }
-    TCNT0=0x00;
+    
 }
 
 
