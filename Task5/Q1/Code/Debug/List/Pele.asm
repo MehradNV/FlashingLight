@@ -1084,6 +1084,12 @@ __DELAY_USW_LOOP:
 	ADD  R31,R0
 	.ENDM
 
+;NAME DEFINITIONS FOR GLOBAL VARIABLES ALLOCATED TO REGISTERS
+	.DEF _currentState=R4
+	.DEF _currentState_msb=R5
+	.DEF _counter=R6
+	.DEF _counter_msb=R7
+
 	.CSEG
 	.ORG 0x00
 
@@ -1100,6 +1106,7 @@ __START_OF_CODE:
 	JMP  0x00
 	JMP  0x00
 	JMP  0x00
+	JMP  _timer0_ovf_isr
 	JMP  0x00
 	JMP  0x00
 	JMP  0x00
@@ -1111,7 +1118,35 @@ __START_OF_CODE:
 	JMP  0x00
 	JMP  0x00
 	JMP  0x00
-	JMP  0x00
+
+;REGISTER BIT VARIABLES INITIALIZATION
+__REG_BIT_VARS:
+	.DW  0x0000
+
+;GLOBAL REGISTER VARIABLES INITIALIZATION
+__REG_VARS:
+	.DB  0x0,0x0,0x0,0x0
+
+_0x3:
+	.DB  0x9,0x0,0xA,0x0,0x6,0x0,0x5
+
+__GLOBAL_INI_TBL:
+	.DW  0x01
+	.DW  0x02
+	.DW  __REG_BIT_VARS*2
+
+	.DW  0x04
+	.DW  0x04
+	.DW  __REG_VARS*2
+
+	.DW  0x07
+	.DW  _states
+	.DW  _0x3*2
+
+_0xFFFFFFFF:
+	.DW  0
+
+#define __GLOBAL_INI_TBL_PRESENT 1
 
 __RESET:
 	CLI
@@ -1142,6 +1177,29 @@ __CLEAR_SRAM:
 	ST   X+,R30
 	SBIW R24,1
 	BRNE __CLEAR_SRAM
+
+;GLOBAL VARIABLES INITIALIZATION
+	LDI  R30,LOW(__GLOBAL_INI_TBL*2)
+	LDI  R31,HIGH(__GLOBAL_INI_TBL*2)
+__GLOBAL_INI_NEXT:
+	LPM  R24,Z+
+	LPM  R25,Z+
+	SBIW R24,0
+	BREQ __GLOBAL_INI_END
+	LPM  R26,Z+
+	LPM  R27,Z+
+	LPM  R0,Z+
+	LPM  R1,Z+
+	MOVW R22,R30
+	MOVW R30,R0
+__GLOBAL_INI_LOOP:
+	LPM  R0,Z+
+	ST   X+,R0
+	SBIW R24,1
+	BRNE __GLOBAL_INI_LOOP
+	MOVW R30,R22
+	RJMP __GLOBAL_INI_NEXT
+__GLOBAL_INI_END:
 
 ;HARDWARE STACK POINTER INITIALIZATION
 	LDI  R30,LOW(__SRAM_END-__HEAP_SIZE)
@@ -1197,29 +1255,197 @@ __CLEAR_SRAM:
 	.EQU __sm_adc_noise_red=0x10
 	.SET power_ctrl_reg=mcucr
 	#endif
+;#include <delay.h>
 ;
-;// Declare your global variables here
-;
-;void main(void)
-; 0000 001D {
+;bit i =0;
+;int states[4] = {9 , 10 , 6 , 5};
+
+	.DSEG
+;int currentState=0;
+;int counter =0;
+;interrupt [TIM0_OVF] void timer0_ovf_isr(void)
+; 0000 0020 {
 
 	.CSEG
+_timer0_ovf_isr:
+; .FSTART _timer0_ovf_isr
+	ST   -Y,R26
+	ST   -Y,R27
+	ST   -Y,R30
+	ST   -Y,R31
+	IN   R30,SREG
+	ST   -Y,R30
+; 0000 0021 
+; 0000 0022     counter++;
+	MOVW R30,R6
+	ADIW R30,1
+	MOVW R6,R30
+; 0000 0023     if(counter == 20){
+	LDI  R30,LOW(20)
+	LDI  R31,HIGH(20)
+	CP   R30,R6
+	CPC  R31,R7
+	BRNE _0x4
+; 0000 0024 
+; 0000 0025         if(currentState < 4 && i ==0){
+	LDI  R30,LOW(4)
+	LDI  R31,HIGH(4)
+	CP   R4,R30
+	CPC  R5,R31
+	BRGE _0x6
+	SBRS R2,0
+	RJMP _0x7
+_0x6:
+	RJMP _0x5
+_0x7:
+; 0000 0026 
+; 0000 0027        PORTA =  states[currentState];
+	MOVW R30,R4
+	LDI  R26,LOW(_states)
+	LDI  R27,HIGH(_states)
+	LSL  R30
+	ROL  R31
+	ADD  R26,R30
+	ADC  R27,R31
+	LD   R30,X
+	OUT  0x1B,R30
+; 0000 0028        currentState++;
+	MOVW R30,R4
+	ADIW R30,1
+	MOVW R4,R30
+; 0000 0029 
+; 0000 002A        i =1;
+	SET
+	BLD  R2,0
+; 0000 002B 
+; 0000 002C        if(currentState == 4)
+	LDI  R30,LOW(4)
+	LDI  R31,HIGH(4)
+	CP   R30,R4
+	CPC  R31,R5
+	BRNE _0x8
+; 0000 002D         {
+; 0000 002E          currentState = 0;
+	CLR  R4
+	CLR  R5
+; 0000 002F 
+; 0000 0030         }
+; 0000 0031 
+; 0000 0032     } else if(i ==1){
+_0x8:
+	RJMP _0x9
+_0x5:
+	SBRS R2,0
+	RJMP _0xA
+; 0000 0033 
+; 0000 0034            PORTA = 0x00;
+	LDI  R30,LOW(0)
+	OUT  0x1B,R30
+; 0000 0035         i = 0;
+	CLT
+	BLD  R2,0
+; 0000 0036         if(currentState == 4)
+	LDI  R30,LOW(4)
+	LDI  R31,HIGH(4)
+	CP   R30,R4
+	CPC  R31,R5
+	BRNE _0xB
+; 0000 0037         {
+; 0000 0038          currentState = 0;
+	CLR  R4
+	CLR  R5
+; 0000 0039 
+; 0000 003A         }
+; 0000 003B 
+; 0000 003C         }
+_0xB:
+; 0000 003D 
+; 0000 003E 
+; 0000 003F           counter=0;
+_0xA:
+_0x9:
+	CLR  R6
+	CLR  R7
+; 0000 0040 
+; 0000 0041         }
+; 0000 0042 
+; 0000 0043     TCNT0 = 6;
+_0x4:
+	LDI  R30,LOW(6)
+	OUT  0x32,R30
+; 0000 0044 
+; 0000 0045 
+; 0000 0046 
+; 0000 0047 }
+	LD   R30,Y+
+	OUT  SREG,R30
+	LD   R31,Y+
+	LD   R30,Y+
+	LD   R27,Y+
+	LD   R26,Y+
+	RETI
+; .FEND
+;
+;void main(void)
+; 0000 004A {
 _main:
 ; .FSTART _main
-; 0000 001E // Declare your local variables here
-; 0000 001F 
-; 0000 0020 
-; 0000 0021 while (1)
-_0x3:
-; 0000 0022       {
-; 0000 0023       // Place your code here
-; 0000 0024 
-; 0000 0025       }
-	RJMP _0x3
-; 0000 0026 }
-_0x6:
-	RJMP _0x6
+; 0000 004B 
+; 0000 004C DDRA=0xff;
+	LDI  R30,LOW(255)
+	OUT  0x1A,R30
+; 0000 004D PORTA=0x00;
+	LDI  R30,LOW(0)
+	OUT  0x1B,R30
+; 0000 004E 
+; 0000 004F DDRC=0x00;
+	OUT  0x14,R30
+; 0000 0050 PINC=0x00;
+	OUT  0x13,R30
+; 0000 0051 
+; 0000 0052 
+; 0000 0053 
+; 0000 0054 TCCR0=(0<<WGM00) | (0<<COM01) | (0<<COM00) | (0<<WGM01) | (0<<CS02) | (0<<CS01) | (1<<CS00);
+	LDI  R30,LOW(1)
+	OUT  0x33,R30
+; 0000 0055 TCNT0 = 6;
+	LDI  R30,LOW(6)
+	OUT  0x32,R30
+; 0000 0056 OCR0=0x00;
+	LDI  R30,LOW(0)
+	OUT  0x3C,R30
+; 0000 0057 
+; 0000 0058 // Timer(s)/Counter(s) Interrupt(s) initialization
+; 0000 0059 TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (0<<TOIE1) | (0<<OCIE0) | (1<<TOIE0);
+	LDI  R30,LOW(1)
+	OUT  0x39,R30
+; 0000 005A 
+; 0000 005B 
+; 0000 005C while (1)
+_0xC:
+; 0000 005D       {
+; 0000 005E         if(PINC.2 == 0)
+	SBIC 0x13,2
+	RJMP _0xF
+; 0000 005F         {
+; 0000 0060               #asm("sei")
+	sei
+; 0000 0061 
+; 0000 0062 
+; 0000 0063          // Global enable interrupts
+; 0000 0064        }
+; 0000 0065 
+; 0000 0066       }
+_0xF:
+	RJMP _0xC
+; 0000 0067 }
+_0x10:
+	RJMP _0x10
 ; .FEND
+
+	.DSEG
+_states:
+	.BYTE 0x8
 
 	.CSEG
 
